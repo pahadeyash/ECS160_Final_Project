@@ -8,19 +8,17 @@ struct tweeterStruct{
 };
 
 struct tweeterStruct tweeterArray[20000];
+struct tweeterStruct copyArray[20000];
 
-void initializeTweeterArray() {
-	int i;
-	for(i=0; i < 20000; i++) {
-		tweeterArray[i].tweeter = (char*)calloc(1, sizeof(char));
-	}
-}
 
 char* getfield(char* line, int num);
 char* cleanString(char *str);
 int tweeterCheck(char* name);
 void updateTweeter(char* name);
 void printTweeters();
+void initializeTweeterArray();
+void initializeCopyArray();
+void printTopTen();
 
 int main(int argc, char** argv)
 {
@@ -33,29 +31,28 @@ int main(int argc, char** argv)
 
     initializeTweeterArray();
 
+    int i =0;
+
     while (fgets(line, 1024, stream)){
-    	int i=0;
         char* tmp = strdup(line);
-        //printf("%s\n", tmp);
         
         char* name = getfield(tmp, 9);
         name = cleanString(name);
         
-        // strcpy(tweeterArray[i].tweeter, name);
        	if (tweeterCheck(name) == -1){
-       		printf("Tweeter doesn't exist\n");
-       		strcpy(tweeterArray[i].tweeter,name);
-       		printf("%s\n",tweeterArray[i].tweeter);
+       		tweeterArray[i].tweeter = name;
        		tweeterArray[i].tweetCount = 1;
+
        	} else {
-       		printf("Tweeter exists\n");
        		updateTweeter(name);
        	}
+
         i++;
     }
 
+    initializeCopyArray();
     printTweeters();
-
+    printTopTen();
 
 }
 
@@ -92,16 +89,23 @@ int tweeterCheck(char* name)
 {
 	int i;
 	for(i=0; i < 20000; i++) {
-			if (tweeterArray[i].tweeter == name){
+			if (strcmp(tweeterArray[i].tweeter,name) == 0){
 				return 1;
 			}
 	}
 	return -1;
 }
 
+void initializeTweeterArray() {
+	int i;
+	for(i=0; i < 20000; i++) {
+		tweeterArray[i].tweeter = (char*)calloc(1, sizeof(char));
+	}
+}
+
 void updateTweeter(char* name){
 	for (int i = 0; i < 20000; i++){
-		if (tweeterArray[i].tweeter == name){
+		if (strcmp(tweeterArray[i].tweeter,name) == 0){
 			tweeterArray[i].tweetCount++;
 			break;
 		}
@@ -109,7 +113,37 @@ void updateTweeter(char* name){
 }
 
 void printTweeters(){
-	for (int i = 0; i < 40; i++){
-		printf("%s %d\n", tweeterArray[i].tweeter, tweeterArray[i].tweetCount);
+	for (int i = 0; i < 20000; i++){
+		printf("CopyTweeter:%s CopyTweeter Count: %d\n", copyArray[i].tweeter, copyArray[i].tweetCount);
+	}
+}
+
+void initializeCopyArray(){
+	int i;
+	for(i=0; i < 20000; i++) {
+		copyArray[i].tweeter = (char*)calloc(1, sizeof(char));
+		copyArray[i].tweeter = tweeterArray[i].tweeter;
+		copyArray[i].tweetCount = tweeterArray[i].tweetCount;
+	}
+}
+
+void printTopTen(){
+	for (int i =0; i <10; i++){
+		int max =0;
+		for (int i=0; i <20000; i++){
+			if (copyArray[i].tweetCount > max){
+				max = copyArray[i].tweetCount;
+				//printf("max: %d\n", max);
+			}
+		}
+
+		for (int i =0; i <20000; i++){
+			if (copyArray[i].tweetCount == max){
+				printf("%s:%d\n", copyArray[i].tweeter, copyArray[i].tweetCount);
+				copyArray[i].tweetCount = 0;
+				//printf("%s:%d\n", copyArray[i].tweeter, copyArray[i].tweetCount);
+				break;
+			}
+		}
 	}
 }
