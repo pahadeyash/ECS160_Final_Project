@@ -2,45 +2,90 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+/*TODO
+1. Take in the path of file from argument.
+2. Handle errors properly
+3. Store the info in the array
+*/
+
 char *cleanString(char *str);
 
+struct tweeterStruct{
+	char *tweeter;
+	int tweetCount;
+};
+
+struct tweeterStruct lineArray[20000];
+
 int main(int argc, char **argv)
-{	
+{
+	int count = 0;
+	char c;
 	FILE *stream;
 	char *line = NULL;
-    size_t len = 0;
-   	const char s[2] = ",";
-   	char *token;
-   	int isValid = 0;
+  size_t len = 0;
+	int lineCount = 0;
+ 	const char s[2] = ",";
+ 	char *token;
+ 	int isValid = 0;
 
 	stream = fopen("cl-tweets-short.csv", "r");
-    //checking if the file exists      
-    if (stream == NULL) {
-        perror("fopen");
-        exit(EXIT_FAILURE);
-    }
+  //checking if the file exists
+  if (stream == NULL) {
+      perror("fopen");
+      exit(EXIT_FAILURE);
+  }
 
-    // checking if file is valid 
-    getline(&line, &len, stream);       
-    token = strtok(line, s);
-    while( token != NULL ){
-    	token = cleanString(token);
-    	if (strcmp("name", token) == 0){
-    		isValid = 1;
-      		break;
-      	}
+  // checking if file is valid
+  getline(&line, &len, stream);
+  token = strtok(line, s);
+	int columnCount = 0;
 
-      	token = strtok(NULL, s);
-   	}
+	while( token != NULL ){
+  	token = cleanString(token);
+  	if (strcmp("name", token) == 0){
+  		isValid = 1;
+			break;
+    	}
+		columnCount++;
+    token = strtok(NULL, s);
+ 	}
 
-   	if (isValid == 0){
-   		fprintf(stderr, "File isn't valid\n");
-   		return -1;
-   	}
+ 	if (isValid == 0){
+ 		fprintf(stderr, "Invalid input format\n");
+ 		return -1;
+ 	}
 
-    free(line);
-    fclose(stream);
-    exit(EXIT_SUCCESS);
+	/*
+		Need to rethink counting logic.
+	*/
+	if(isValid != 0){
+		for (c = getc(stream); c != EOF; c = getc(stream))
+        if (c == '\n') // Increment count if this character is newline
+            count = count + 1;
+						if (count > 20000){
+							return -1;
+						} else {
+							printf("%d\n",count);
+						}
+	}
+
+	line = NULL;
+	len = 0;
+
+	while (getline(&line, &len, stream)){
+		token = strtok(line, s);
+		token = cleanString(token);
+		
+		printf("Token: %s", token);
+	}
+
+
+
+  free(line);
+  fclose(stream);
+  exit(EXIT_SUCCESS);
 	return 0;
 }
 
