@@ -67,8 +67,7 @@ int main(int argc, char **argv)
 					i++;
 					token = strtok(NULL, s);
 				}
-				if(token != )
-					printf("%s\n",token);
+				printf("%s\n",token);
 				token = strtok(NULL, s);
 			}
 
