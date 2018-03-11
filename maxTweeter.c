@@ -29,14 +29,48 @@ int main(int argc, char** argv)
 	printf("Input file: %s\n", argv[1]);
     FILE* stream = fopen(argv[1], "r");
 
+		char *line1 = NULL;
+		size_t len = 0;
+		const char s[2] = ",";
+		char *token;
+		int isValid = 0;
+
+		  //checking if the file exists
+		if (stream == NULL) {
+		  perror("fopen");
+		  exit(EXIT_FAILURE);
+		}
+
+		// checking if file is valid
+		  getline(&line1, &len, stream);
+		  token = strtok(line1, s);
+			int columnCount = 0;
+
+			while( token != NULL ){
+		    token = cleanString(token);
+
+		    if (strcmp("name", token) == 0){
+		      isValid = 1;
+		      break;
+		    }
+
+		  columnCount++;
+		    token = strtok(NULL, s);
+		}
+
+		stream = fopen(argv[1], "r");
+
+
     initializeTweeterArray();
+
+		columnCount++;
 
     int i =0;
 
     while (fgets(line, 1024, stream)){
         char* tmp = strdup(line);
 
-        char* name = getfield(tmp, 9);
+        char* name = getfield(tmp, columnCount);
         name = cleanString(name);
 
        	if (tweeterCheck(name) == -1){
