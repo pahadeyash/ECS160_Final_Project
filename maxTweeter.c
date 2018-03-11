@@ -23,47 +23,57 @@ void printTopTen();
 int main(int argc, char** argv)
 {
 	char line[1024];
-    float lines = 0;
-    float lenTotal = 0;
+	char *line1 = NULL;
+	size_t len = 0;
+	const char s[2] = ",";
+	char *token;
+	int isValid = 0;
+	int lineCount = 0;
+	int columnCount = 0;
 
-	printf("Input file: %s\n", argv[1]);
     FILE* stream = fopen(argv[1], "r");
 
-		char *line1 = NULL;
-		size_t len = 0;
-		const char s[2] = ",";
-		char *token;
-		int isValid = 0;
 
-		  //checking if the file exists
-		if (stream == NULL) {
-		  perror("fopen");
-		  exit(EXIT_FAILURE);
-		}
+	//checking if the file exists
+	if (stream == NULL) {
+	  perror("fopen");
+	  exit(EXIT_FAILURE);
+	}
 
-		// checking if file is valid
-		  getline(&line1, &len, stream);
-		  token = strtok(line1, s);
-			int columnCount = 0;
+	// checking if file is valid
+	getline(&line1, &len, stream);
+	token = strtok(line1, s);
 
-			while( token != NULL ){
-		    token = cleanString(token);
+	// checking if there is name column
+	while( token != NULL ){
+		token = cleanString(token);
 
-		    if (strcmp("name", token) == 0){
-		      isValid = 1;
-		      break;
-		    }
+	    if (strcmp("name", token) == 0){
+	      isValid = 1;
+	      break;
+	    }
 
-		  columnCount++;
-		    token = strtok(NULL, s);
-		}
+		columnCount++;
+		token = strtok(NULL, s);
+	}
 
-		stream = fopen(argv[1], "r");
+	// getting the number of line in the csv file
+	while (fgets (line, 1024, stream)){
+		lineCount++;
+	}
 
+	// checking if the file is valid 
+	if (isValid != 1 || lineCount > 20000){
+		fprintf(stderr, "This isn't a valid file\n");
+		return -1;
+	}
+
+	stream = fopen(argv[1], "r");
 
     initializeTweeterArray();
 
-		columnCount++;
+    // adjusting column count for get field
+	columnCount++;
 
     int i =0;
 
@@ -85,9 +95,7 @@ int main(int argc, char** argv)
     }
 
     initializeCopyArray();
-    // printTweeters();
     printTopTen();
-
 }
 
 char* cleanString(char *str)
@@ -150,7 +158,7 @@ void printTweeters(){
 	for (int i = 0; i < 20000; i++){
 		if(copyArray[i].tweetCount != 0){
 		printf("CopyTweeter:%s CopyTweeter Count: %d\n", copyArray[i].tweeter, copyArray[i].tweetCount);
-	}
+		}
 	}
 }
 
@@ -158,8 +166,10 @@ void initializeCopyArray(){
 	int i;
 	for(i=0; i < 20000; i++) {
 		copyArray[i].tweeter = (char*)calloc(1, sizeof(char));
-		copyArray[i].tweeter = tweeterArray[i].tweeter;
-		copyArray[i].tweetCount = tweeterArray[i].tweetCount;
+		if ( strcmp(tweeterArray[i].tweeter,"name") != 0 ){
+			copyArray[i].tweeter = tweeterArray[i].tweeter;
+			copyArray[i].tweetCount = tweeterArray[i].tweetCount;
+		}
 	}
 }
 
@@ -169,15 +179,17 @@ void printTopTen(){
 		for (int i=0; i <20000; i++){
 			if (copyArray[i].tweetCount > max){
 				max = copyArray[i].tweetCount;
-				//printf("max: %d\n", max);
 			}
+		}
+
+		if (max == 0){
+			break;
 		}
 
 		for (int i =0; i <20000; i++){
 			if (copyArray[i].tweetCount == max){
 				printf("%s:%d\n", copyArray[i].tweeter, copyArray[i].tweetCount);
 				copyArray[i].tweetCount = 0;
-				//printf("%s:%d\n", copyArray[i].tweeter, copyArray[i].tweetCount);
 				break;
 			}
 		}
