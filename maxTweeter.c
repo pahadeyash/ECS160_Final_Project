@@ -33,7 +33,6 @@ int main(int argc, char** argv)
 
     FILE* stream = fopen(argv[1], "r");
 
-
 	//checking if the file exists
 	if (stream == NULL) {
 	  perror("fopen");
@@ -81,13 +80,14 @@ int main(int argc, char** argv)
         char* tmp = strdup(line);
 
         char* name = getfield(tmp, columnCount);
+        // removed " from the string so its easier to compare 
         name = cleanString(name);
 
-       	if (tweeterCheck(name) == -1){
+        // if tweeter doesn't exists add it
+       	if (tweeterCheck(name) == -1){ 
        		tweeterArray[i].tweeter = name;
        		tweeterArray[i].tweetCount = 1;
-
-       	} else {
+       	} else { // if tweeter already exists increment the count
        		updateTweeter(name);
        	}
 
@@ -154,6 +154,7 @@ void updateTweeter(char* name){
 	}
 }
 
+// used for to print out all the tweeters
 void printTweeters(){
 	for (int i = 0; i < 20000; i++){
 		if(copyArray[i].tweetCount != 0){
@@ -162,6 +163,7 @@ void printTweeters(){
 	}
 }
 
+// copying the array so that it can be printed
 void initializeCopyArray(){
 	int i;
 	for(i=0; i < 20000; i++) {
@@ -173,6 +175,7 @@ void initializeCopyArray(){
 	}
 }
 
+// takes the copy array and prints the top tweeter and sets its max to 0
 void printTopTen(){
 	for (int i =0; i <10; i++){
 		int max =0;
