@@ -21,7 +21,7 @@ struct tweeterStruct lineArray[20000];
 int main(int argc, char **argv)
 {
 	int count = 0;
-	char c;
+	int c;
 	FILE *stream;
 	char *line = NULL;
   size_t len = 0;
@@ -57,6 +57,12 @@ int main(int argc, char **argv)
  		return -1;
  	}
 
+	while (getline(&line, &len,stream) != -1) {
+			char c[1000];
+			printf("%s",line);
+			strcpy(c, line);
+			 printf("%s\n",c);
+		 }
 	/*
 		Need to rethink counting logic.
 	*/
@@ -69,17 +75,11 @@ int main(int argc, char **argv)
 						} else {
 							printf("%d\n",count);
 						}
+
 	}
 
-	line = NULL;
-	len = 0;
 
-	while (getline(&line, &len, stream)){
-		token = strtok(line, s);
-		token = cleanString(token);
-		
-		printf("Token: %s", token);
-	}
+
 
 
 
