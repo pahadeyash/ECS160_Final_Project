@@ -24,32 +24,34 @@ int main(int argc, char **argv)
 	int c;
 	FILE *stream;
 	char *line = NULL;
-  size_t len = 0;
+  	size_t len = 0;
 	int lineCount = 0;
  	const char s[2] = ",";
  	char *token;
  	int isValid = 0;
 
 	stream = fopen("cl-tweets-short.csv", "r");
-  //checking if the file exists
-  if (stream == NULL) {
-      perror("fopen");
-      exit(EXIT_FAILURE);
-  }
+  	
+  	//checking if the file exists	
+  	if (stream == NULL) {
+    	perror("fopen");
+    	exit(EXIT_FAILURE);
+  	}
 
-  // checking if file is valid
-  getline(&line, &len, stream);
-  token = strtok(line, s);
+  	// checking if file is valid
+  	getline(&line, &len, stream);
+  	token = strtok(line, s);
 	int columnCount = 0;
 
 	while( token != NULL ){
-  	token = cleanString(token);
-  	if (strcmp("name", token) == 0){
-  		isValid = 1;
+	  	token = cleanString(token);
+	  	if (strcmp("name", token) == 0){
+	  		isValid = 1;
 			break;
-    	}
+	    }
+
 		columnCount++;
-    token = strtok(NULL, s);
+	    token = strtok(NULL, s);
  	}
 
  	if (isValid == 0){
@@ -58,34 +60,32 @@ int main(int argc, char **argv)
  	}
 
 	while (getline(&line, &len,stream) != -1) {
-			char c[1000];
-			printf("%s",line);
-			strcpy(c, line);
-			 printf("%s\n",c);
-		 }
+		char c[1000];
+		printf("%s",line);
+		strcpy(c, line);
+		printf("%s\n",c);
+	}
+
 	/*
 		Need to rethink counting logic.
 	*/
+
 	if(isValid != 0){
 		for (c = getc(stream); c != EOF; c = getc(stream))
         if (c == '\n') // Increment count if this character is newline
             count = count + 1;
-						if (count > 20000){
-							return -1;
-						} else {
-							printf("%d\n",count);
-						}
 
+			if (count > 20000){
+				return -1;
+			} else {
+				printf("%d\n",count);
+			}
 	}
 
+	free(line);
+	fclose(stream);
+	exit(EXIT_SUCCESS);
 
-
-
-
-
-  free(line);
-  fclose(stream);
-  exit(EXIT_SUCCESS);
 	return 0;
 }
 
@@ -94,6 +94,7 @@ char *cleanString(char *str)
 {
 	int i,j;
 	i = 0;
+	
 	while(i<strlen(str))
 	{
 	    if (str[i]=='"')
@@ -103,5 +104,6 @@ char *cleanString(char *str)
 	    }
 	    else i++;
 	}
+
 	return str;
 }
