@@ -35,10 +35,10 @@ int main(int argc, char** argv)
 
     while (fgets(line, 1024, stream)){
         char* tmp = strdup(line);
-        
+
         char* name = getfield(tmp, 9);
         name = cleanString(name);
-        
+
        	if (tweeterCheck(name) == -1){
        		tweeterArray[i].tweeter = name;
        		tweeterArray[i].tweetCount = 1;
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     }
 
     initializeCopyArray();
-    printTweeters();
+    // printTweeters();
     printTopTen();
 
 }
@@ -114,7 +114,9 @@ void updateTweeter(char* name){
 
 void printTweeters(){
 	for (int i = 0; i < 20000; i++){
+		if(copyArray[i].tweetCount != 0){
 		printf("CopyTweeter:%s CopyTweeter Count: %d\n", copyArray[i].tweeter, copyArray[i].tweetCount);
+	}
 	}
 }
 
