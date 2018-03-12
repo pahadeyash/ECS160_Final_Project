@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+/*TODO
+1.Better comments
+2. Function for getting columns
+*/
 struct tweeterStruct{
 	char* tweeter;
 	int tweetCount;
@@ -19,9 +24,12 @@ void printTweeters();
 void initializeTweeterArray();
 void initializeCopyArray();
 void printTopTen();
+int getColumnNum(char *line);
+
 
 int main(int argc, char** argv)
 {
+	printf("TEST");
 	char line[1024];
 	char *line1 = NULL;
 	size_t len = 0;
@@ -30,38 +38,34 @@ int main(int argc, char** argv)
 	int isValid = 0;
 	int lineCount = 0;
 	int columnCount = 0;
+	int nameColCount = 0;
 
-    FILE* stream = fopen(argv[1], "r");
-
-	//checking if the file exists
-	if (stream == NULL) {
-	  perror("fopen");
-	  exit(EXIT_FAILURE);
-	}
+  FILE* stream = fopen(argv[1], "r");
 
 	// checking if file is valid
 	getline(&line1, &len, stream);
 	token = strtok(line1, s);
+	printf("Tokens: %s", token);
 
 	// checking if there is name column
 	while( token != NULL ){
-		token = cleanString(token);
 
-	    if (strcmp("name", token) == 0){
+	    if (strcmp("\"name\"", token) == 0){
+				nameColCount = columnCount;
 	      isValid = 1;
-	      break;
 	    }
 
 		columnCount++;
 		token = strtok(NULL, s);
 	}
 
+
 	// getting the number of line in the csv file
 	while (fgets (line, 1024, stream)){
 		lineCount++;
 	}
 
-	// checking if the file is valid 
+	// checking if the file is valid
 	if (isValid != 1 || lineCount > 20000){
 		fprintf(stderr, "This isn't a valid file\n");
 		return -1;
@@ -69,22 +73,30 @@ int main(int argc, char** argv)
 
 	stream = fopen(argv[1], "r");
 
-    initializeTweeterArray();
+  initializeTweeterArray();
 
     // adjusting column count for get field
-	columnCount++;
+	nameColCount++;
 
     int i =0;
 
     while (fgets(line, 1024, stream)){
         char* tmp = strdup(line);
 
-        char* name = getfield(tmp, columnCount);
-        // removed " from the string so its easier to compare 
-        name = cleanString(name);
+				int tokenNum = getColumnNum(line);
 
+
+				if(i > 0){
+				if((tokenNum-1) != columnCount){
+					fprintf(stderr, "This isn't a valid file\n");
+					return -1;
+				}
+			}
+
+        char* name = getfield(tmp, nameColCount);
+        name = cleanString(name);
         // if tweeter doesn't exists add it
-       	if (tweeterCheck(name) == -1){ 
+       	if (tweeterCheck(name) == -1){
        		tweeterArray[i].tweeter = name;
        		tweeterArray[i].tweetCount = 1;
        	} else { // if tweeter already exists increment the count
@@ -102,6 +114,7 @@ char* cleanString(char *str)
 {
 	int i,j;
 	i = 0;
+	if(str != NULL){
 	while(i<strlen(str))
 	{
 	    if (str[i]=='"')
@@ -111,6 +124,7 @@ char* cleanString(char *str)
 	    }
 	    else i++;
 	}
+}
 	return str;
 }
 
@@ -197,4 +211,18 @@ void printTopTen(){
 			}
 		}
 	}
+}
+
+int getColumnNum(char *str){
+	char s[2] = ",";
+	int count = 0;
+
+	char* token = strtok(str, s);
+	count = 1;
+	while( token != NULL ) {
+		count++;
+		token = strtok(NULL, s);
+	}
+
+	return count;
 }
