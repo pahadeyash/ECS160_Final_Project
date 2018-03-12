@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 	int columnCount = 0;
 	int nameColCount = 0;
 
-  FILE* stream = fopen(argv[1], "r");
+	FILE* stream = fopen(argv[1], "r");
 
 	if (stream == NULL){
 		perror("fopen");
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 
 	stream = fopen(argv[1], "r");
 
-  initializeTweeterArray();
+  	initializeTweeterArray();
 
     // adjusting column count for get field
 	nameColCount++;
@@ -79,15 +79,15 @@ int main(int argc, char** argv)
     while (fgets(line, 1024, stream)){
         char* tmp = strdup(line);
 
-				int tokenNum = getColumnNum(line);
+		int tokenNum = getColumnNum(line);
 
 
-				if(i > 0){
-				if((tokenNum-1) != columnCount){
-					fprintf(stderr, "This isn't a valid file\n");
-					return -1;
-				}
+		if(i > 0){
+			if((tokenNum-1) != columnCount){
+				fprintf(stderr, "This isn't a valid file\n");
+				return -1;
 			}
+		}
 
         char* name = getfield(tmp, nameColCount);
         name = cleanString(name);
@@ -111,16 +111,16 @@ char* cleanString(char *str)
 	int i,j;
 	i = 0;
 	if(str != NULL){
-	while(i<strlen(str))
-	{
-	    if (str[i]=='"')
-	    {
-	        for (j=i; j<strlen(str); j++)
-	            str[j]=str[j+1];
-	    }
-	    else i++;
+		while(i<strlen(str))
+		{
+		    if (str[i]=='"')
+		    {
+		        for (j=i; j<strlen(str); j++)
+		            str[j]=str[j+1];
+		    }
+		    else i++;
+		}
 	}
-}
 	return str;
 }
 
@@ -148,14 +148,16 @@ int tweeterCheck(char* name)
 	return -1;
 }
 
-void initializeTweeterArray() {
+void initializeTweeterArray() 
+{
 	int i;
 	for(i=0; i < 20000; i++) {
 		tweeterArray[i].tweeter = (char*)calloc(1, sizeof(char));
 	}
 }
 
-void updateTweeter(char* name){
+void updateTweeter(char* name)
+{
 	for (int i = 0; i < 20000; i++){
 		if (strcmp(tweeterArray[i].tweeter,name) == 0){
 			tweeterArray[i].tweetCount++;
@@ -165,7 +167,8 @@ void updateTweeter(char* name){
 }
 
 // used for to print out all the tweeters
-void printTweeters(){
+void printTweeters()
+{
 	for (int i = 0; i < 20000; i++){
 		if(copyArray[i].tweetCount != 0){
 		printf("CopyTweeter:%s CopyTweeter Count: %d\n", copyArray[i].tweeter, copyArray[i].tweetCount);
@@ -174,7 +177,8 @@ void printTweeters(){
 }
 
 // copying the array so that it can be printed
-void initializeCopyArray(){
+void initializeCopyArray()
+{
 	int i;
 	for(i=0; i < 20000; i++) {
 		copyArray[i].tweeter = (char*)calloc(1, sizeof(char));
@@ -186,7 +190,8 @@ void initializeCopyArray(){
 }
 
 // takes the copy array and prints the top tweeter and sets its max to 0
-void printTopTen(){
+void printTopTen()
+{
 	for (int i =0; i <10; i++){
 		int max =0;
 		for (int i=0; i <20000; i++){
@@ -209,7 +214,8 @@ void printTopTen(){
 	}
 }
 
-int getColumnNum(char *str){
+int getColumnNum(char *str)
+{
 	char s[2] = ",";
 	int count = 0;
 
