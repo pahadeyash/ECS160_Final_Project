@@ -101,10 +101,20 @@ int main(int argc, char** argv)
 
         i++;
     }
-
+	
     initializeCopyArray();
     printTopTen();
+	
+    return 0;
+
 }
+
+/**
+ * cleanString - Strips " from the string 
+ * @str: String to strip
+ *
+ * Return: a string withouth the "
+ */
 
 char* cleanString(char *str)
 {
@@ -124,7 +134,14 @@ char* cleanString(char *str)
 	return str;
 }
 
-//This offsets by 1
+/**
+ * getfieled - returns the token at a particular column
+ * @str: line that will be tokenized 
+ * @num: the column number 
+ *
+ * Return: token from the specified field
+ * or NULL if no token in the field found
+ */
 char* getfield(char* line, int num)
 {
     char* tok;
@@ -137,6 +154,14 @@ char* getfield(char* line, int num)
     return NULL;
 }
 
+
+/**
+ * tweeterCheck - checks if a tweeter with the name already exists
+ * @name: name of the tweeter
+ *
+ * Return: 1 if a tweeter with the name already exits and -1
+ * if it doesn't exist
+ */
 int tweeterCheck(char* name)
 {
 	int i;
@@ -148,6 +173,10 @@ int tweeterCheck(char* name)
 	return -1;
 }
 
+
+/**
+ * initializeTweeterArray - allocated memory for the tweeter array
+ */
 void initializeTweeterArray() 
 {
 	int i;
@@ -156,6 +185,10 @@ void initializeTweeterArray()
 	}
 }
 
+/**
+ * updateTweeter - checks if tweeter exists with the name already exists and update the count
+ * @name: name of the tweeter
+ */
 void updateTweeter(char* name)
 {
 	for (int i = 0; i < 20000; i++){
@@ -166,7 +199,9 @@ void updateTweeter(char* name)
 	}
 }
 
-// used for to print out all the tweeters
+/**
+ * printTweeters - prints out all the Tweeters for debugging purpose
+ */
 void printTweeters()
 {
 	for (int i = 0; i < 20000; i++){
@@ -176,7 +211,9 @@ void printTweeters()
 	}
 }
 
-// copying the array so that it can be printed
+/**
+ * initializeCopyArray - create the a copy array so that the max can be calculated for printing
+ */
 void initializeCopyArray()
 {
 	int i;
@@ -189,7 +226,9 @@ void initializeCopyArray()
 	}
 }
 
-// takes the copy array and prints the top tweeter and sets its max to 0
+/**
+ * printTopTen - takes the copy array and prints the top tweeter and sets its max to 0
+ */
 void printTopTen()
 {
 	for (int i =0; i <10; i++){
@@ -214,6 +253,12 @@ void printTopTen()
 	}
 }
 
+/**
+ * getColumnNum - gets the total number of columms
+ * @str: the line in the csv file to get the number of columns
+ *
+ * Return: the number of columns
+ */
 int getColumnNum(char *str)
 {
 	char s[2] = ",";
