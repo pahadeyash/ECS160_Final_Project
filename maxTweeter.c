@@ -2,11 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-/*TODO
-1.Better comments
-2. Function for getting columns
-*/
 struct tweeterStruct{
 	char* tweeter;
 	int tweetCount;
@@ -29,7 +24,6 @@ int getColumnNum(char *line);
 
 int main(int argc, char** argv)
 {
-	printf("TEST");
 	char line[1024];
 	char *line1 = NULL;
 	size_t len = 0;
@@ -42,14 +36,16 @@ int main(int argc, char** argv)
 
   FILE* stream = fopen(argv[1], "r");
 
+	if (stream == NULL){
+		perror("fopen");
+		exit(EXIT_FAILURE);
+	}
 	// checking if file is valid
 	getline(&line1, &len, stream);
 	token = strtok(line1, s);
-	printf("Tokens: %s", token);
 
 	// checking if there is name column
 	while( token != NULL ){
-
 	    if (strcmp("\"name\"", token) == 0){
 				nameColCount = columnCount;
 	      isValid = 1;
